@@ -14,20 +14,43 @@ provider "nxos" {
   insecure = true
 }
 
-resource "nxos_rest" "switchportBlock_eth1_1" {
-  dn         = "sys/intf/phys-[eth1/1]/physExtd"
-  class_name = "l1PhysIfExtended"
+resource "nxos_rest" "globalStpInst" {
+  dn         = "sys/stp/inst"
+  class_name = "stpInst"
 
   content = {
-    switchportBlock   = "unicast"
+    ctrl        = "extchp-bpdu-guard"
   }
 }
 
-resource "nxos_rest" "switchportBlock_eth1_2" {
-  dn         = "sys/intf/phys-[eth1/2]/physExtd"
-  class_name = "l1PhysIfExtended"
+
+resource "nxos_rest" "stpIf_e1_1" {
+  dn         = "sys/stp/inst/if-[eth1/1]"
+  class_name = "stpIf"
 
   content = {
-    switchportBlock   = "unicast"
+    bpduguard   = "enable"
+    mode        = "edge"
   }
+}
+
+resource "nxos_rest" "stpIf_e1_2" {
+  dn         = "sys/stp/inst/if-[eth1/2]"
+  class_name = "stpIf"
+
+  content = {
+    bpduguard   = "enable"
+    mode        = "edge"
+  }
+}
+
+resource "nxos_spanning_tree_interface" "stpIf_e1_3" {
+  interface_id = "eth1/3"
+  bpdu_guard   = "enable"
+  mode         = "edge"
+}
+resource "nxos_spanning_tree_interface" "stpIf_e1_4" {
+  interface_id = "eth1/4"
+  bpdu_guard   = "enable"
+  mode         = "edge"
 }
